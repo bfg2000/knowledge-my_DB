@@ -19,3 +19,5 @@
                 |    hosts   = *
                 |    malware = */defer_ok
         #перезагрузить exim
+
+        ![wikiword link](https://github.com/bfg2000/knowledge-my_DB/blob/main/img/test.png)
