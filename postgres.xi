@@ -10,6 +10,7 @@
 
             . подключение
                 | sudo -u postgres psql
+                | psql -U username -h localhos -d dbname
 
             . создание БД
                 | CREATE DATABASE filehosting;

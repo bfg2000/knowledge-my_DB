@@ -86,7 +86,52 @@
             - varchar_pattern_ops
             - bpchar_pattern_ops
 
-        
+. JOIN - стратегии
+    . mergee join
+     - когда надо получить упорядоченную последовательность
+        соединение двух отсортированных последовательностей.
+        Работает быстро и за один проход обоих список.
+    . hash join
+     - используется когда нет возможности воспользовться индесами, но нужен join
+        меньшее отношение помещается в хэш-таблицу. Затем для каждой строки из большей таблицы выполняется поиск значений, 
+        соответствующих условию соединения. Соединение токлько по условию эквивалентности.
+    . nested loop
+     - самый часто используемый
+        соедиение вложенными циклами
+
+    . запрос (пример)
+    | SELECT * FROM movies m JOIN movie_genres g ON m.id = g.movie_id;
+
+. проверка статистики запросов в БД
+    1 - настрока файла конфигурации postgresql.conf
+    | shared_preload_libraries = 'pg_stat_statements'
+    | pg_stat_statements.max = 10000
+    | pg_stat_statements.track = all
+    2 - использование
+    | CREATE extension IF NOT EXISTS pg_stat_statements;
+    | SELECT pg_stat_statements_reset();
+    | ...
+    | SELECT * FROM pg_stat_statements;
+. протоколирование запросов
+    . конфигурация
+        | log_duration = on
+        | log_min_duration_statement = 50   # если запрос выполняется более указанного времени (в мс), то логировать его
+    . запрос
+        | SET log_min_duration_statement = 50;
+        | SELECT * FROM movies WHERE title = 'Alice in Wondarland';
+    . настройка протоколироварния запросов через pgbadger
+        . конфигурация
+        | log_duration = on
+        | log_lock_waits = on;
+        | log_min_duration_statement = 50;
+        | log_filename = 'postgresql-%Y-%m-%d_%H%M%S'
+        | log_directory = '/var/log/postgresql'
+        | logging_collector = on
+
+        логирование происходит в CSV формате, пригодном для анализа утилитой pgbadger
+        . установка
+        | sudo apt install libtext-csv-xs-perl pgbadger
+        | pgbadger /var/log/*.csv
 
 
 
